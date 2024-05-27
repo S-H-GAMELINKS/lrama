@@ -10,12 +10,11 @@ static int yyerror(YYLTYPE *loc, const char *str);
 
 %union {
     int val;
-    int val2;
 }
 
 %token <val> NUM
 %token <val> LPAREN "("
-%token <val2> RPAREN ")"
+%token <val> RPAREN ")"
 %type <val> stmt
 %type <val> expr
 %left '+' '-'
@@ -23,11 +22,7 @@ static int yyerror(YYLTYPE *loc, const char *str);
 
 %error-token {
     $$ = 100;
-} NUM
-
-%error-token {
-    $$ = 100;
-} RPAREN
+} NUM RPAREN
 
 %%
 
