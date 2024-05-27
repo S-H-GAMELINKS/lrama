@@ -10,15 +10,14 @@ static int yyerror(YYLTYPE *loc, const char *str);
 
 %union {
     int val;
+    int val2;
 }
 
 %token <val> NUM
 %token <val> LPAREN "("
-%token <val> RPAREN ")"
+%token <val2> RPAREN ")"
 %type <val> stmt
 %type <val> expr
-%type <val> lparen
-%type <val> rparen
 %left '+' '-'
 %left '*' '/'
 
@@ -51,10 +50,6 @@ expr : NUM
      | expr '*' expr { $$ = $1 * $3; }
      | expr '/' expr { $$ = $1 / $3; }
      ;
-lparen : LPAREN { $$ = 0; }
-       ;
-rparen : RPAREN { $$ = 0; }
-       ;
 
 %%
 
