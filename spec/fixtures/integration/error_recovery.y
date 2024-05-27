@@ -13,7 +13,12 @@ static int yyerror(YYLTYPE *loc, const char *str);
 }
 
 %token <val> NUM
+%token <val> LPAREN "("
+%token <val> RPAREN ")"
+%type <val> stmt
 %type <val> expr
+%type <val> lparen
+%type <val> rparen
 %left '+' '-'
 %left '*' '/'
 
@@ -21,18 +26,35 @@ static int yyerror(YYLTYPE *loc, const char *str);
     $$ = 100;
 } NUM
 
+%error-token {
+    $$ = 100;
+} RPAREN
+
 %%
 
 program : /* empty */
-     | expr { printf("=> %d", $1); }
+     | stmt { printf("=> %d", $1); }
+     ;
+stmt : expr { $$ = $1; }
+     | LPAREN expr RPAREN
+        {
+            if ($3 == 100) {
+                $$ = $2 + $3;
+            } else {
+                $$ = $2;
+            }
+        }
      ;
 expr : NUM
      | expr '+' expr { $$ = $1 + $3; }
      | expr '-' expr { $$ = $1 - $3; }
      | expr '*' expr { $$ = $1 * $3; }
      | expr '/' expr { $$ = $1 / $3; }
-     | '(' expr ')'  { $$ = $2; }
      ;
+lparen : LPAREN { $$ = 0; }
+       ;
+rparen : RPAREN { $$ = 0; }
+       ;
 
 %%
 

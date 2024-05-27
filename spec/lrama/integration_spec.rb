@@ -253,6 +253,12 @@ RSpec.describe "integration" do
       # '100' is complemented
       test_parser("error_recovery", "(1+)", "=> 101", lrama_command_args: %W[-e])
     end
+
+    it "returns 103 for '(1+2'" do
+      # (1+2 #=> 103
+      # '100' is complemented
+      test_parser("error_recovery", "(1+2", "=> 103", lrama_command_args: %W[-e])
+    end
   end
 
   describe "sample files" do
