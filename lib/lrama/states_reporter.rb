@@ -31,12 +31,12 @@ module Lrama
         symbol if symbol.term?
       end
 
-      used_symbol_values = @states.states.filter_map do |state|
+      used_symbol_values = @states.states.map do |state|
         state.accessing_symbol.id.s_value if state.accessing_symbol.term?
       end
 
-      results = terms.filter_map do |term|
-        term unless used_symbol_values.include?(term.id.s_value)
+      results = terms.filter do |term|
+        !used_symbol_values.include?(term.id.s_value)
       end
 
       results.each do |term|
