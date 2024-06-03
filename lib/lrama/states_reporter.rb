@@ -27,15 +27,15 @@ module Lrama
       # binding.break
       io << "Unused Terms\n\n"
 
-      terms = @states.symbols.filter do |symbol|
-        symbol.term?
+      terms = @states.symbols.select do |symbol|
+        symbol if symbol.term?
       end
 
       used_symbol_values = @states.states.map do |state|
         state.accessing_symbol.id.s_value if state.accessing_symbol.term?
       end
 
-      results = terms.filter do |term|
+      results = terms.select do |term|
         !used_symbol_values.include?(term.id.s_value)
       end
 
