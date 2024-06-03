@@ -27,8 +27,8 @@ module Lrama
       # binding.break
       io << "Unused Terms\n\n"
 
-      terms = @states.symbols.filter_map do |symbol|
-        symbol if symbol.term?
+      terms = @states.symbols.filter do |symbol|
+        symbol.term?
       end
 
       used_symbol_values = @states.states.map do |state|
