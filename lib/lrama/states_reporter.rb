@@ -14,13 +14,38 @@ module Lrama
 
     private
 
-    def _report(io, grammar: false, states: false, itemsets: false, lookaheads: false, solved: false, counterexamples: false, verbose: false)
-      # TODO: Unused terms
+    def _report(io, term: false, grammar: false, states: false, itemsets: false, lookaheads: false, solved: false, counterexamples: false, verbose: false)
       # TODO: Unused rules
 
+      report_unused_terms(io) if term
       report_conflicts(io)
       report_grammar(io) if grammar
       report_states(io, itemsets, lookaheads, solved, counterexamples, verbose)
+    end
+
+    def report_unused_terms(io)
+      # binding.break
+      io << "Unused Terms\n\n"
+
+      terms = @states.symbols.filter_map do |symbol|
+        symbol if symbol.term?
+      end
+
+      used_symbol_values = @states.states.filter_map do |state|
+        state.accessing_symbol.id.s_value if state.accessing_symbol.term?
+      end
+
+      results = terms.filter_map do |term|
+        term unless used_symbol_values.include?(term.id.s_value)
+      end
+
+      results.each do |term|
+        io << "#{term.id.s_value.to_s} is unused\n"
+      end
+
+      unless results.empty?
+        io << "\n\n"
+      end
     end
 
     def report_conflicts(io)
