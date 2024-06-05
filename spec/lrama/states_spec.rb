@@ -18,17 +18,17 @@ RSpec.describe Lrama::States do
       expect(str).to eq(<<~'STR')
         Unused Terms
 
-        YYerror is unused
-        YYUNDEF is unused
-        '\\' is unused
-        '\13' is unused
-        keyword_class2 is unused
-        tNUMBER is unused
-        tPLUS is unused
-        tMINUS is unused
-        tEQ is unused
-        tEQEQ is unused
-        '>' is unused
+            0 YYerror
+            1 YYUNDEF
+            2 '\\'
+            3 '\13'
+            4 keyword_class2
+            5 tNUMBER
+            6 tPLUS
+            7 tMINUS
+            8 tEQ
+            9 tEQEQ
+           10 '>'
 
 
         State 1 conflicts: 2 shift/reduce, 1 reduce/reduce

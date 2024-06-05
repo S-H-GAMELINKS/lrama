@@ -39,8 +39,8 @@ module Lrama
         !used_symbol_values.include?(term.id.s_value)
       end
 
-      results.each do |term|
-        io << "#{term.id.s_value.to_s} is unused\n"
+      results.each_with_index do |term, index|
+        io << sprintf("%5d %s\n", index, term.id.s_value)
       end
 
       unless results.empty?
