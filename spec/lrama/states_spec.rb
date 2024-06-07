@@ -13,9 +13,24 @@ RSpec.describe Lrama::States do
       states.compute
 
       str = ""
-      states.reporter.report(str, grammar: true, states: true, itemsets: true, lookaheads: true)
+      states.reporter.report(str, term: true, grammar: true, states: true, itemsets: true, lookaheads: true)
 
-      expect(str).to eq(<<~STR)
+      expect(str).to eq(<<~'STR')
+        Unused Terms
+
+            0 YYerror
+            1 YYUNDEF
+            2 '\\'
+            3 '\13'
+            4 keyword_class2
+            5 tNUMBER
+            6 tPLUS
+            7 tMINUS
+            8 tEQ
+            9 tEQEQ
+           10 '>'
+
+
         State 1 conflicts: 2 shift/reduce, 1 reduce/reduce
 
 
