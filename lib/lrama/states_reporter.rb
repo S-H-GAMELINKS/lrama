@@ -31,7 +31,7 @@ module Lrama
       used_symbols = []
 
       terms = @states.symbols.select(&:term?)
- 
+
       @states.states.select do |state|
         state.shifts.map(&:next_sym)
       end
