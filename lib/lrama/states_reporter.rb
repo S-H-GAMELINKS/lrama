@@ -24,26 +24,39 @@ module Lrama
     end
 
     def report_unused_terms(io)
-      # binding.break
       io << "Unused Terms\n\n"
 
-      terms = @states.symbols.select do |symbol|
-        symbol if symbol.term?
+      results = []
+      terms = []
+      used_symbols = []
+
+      terms = @states.symbols.filter(&:term?)
+ 
+      @states.states.select do |state|
+        state.shifts.map(&:next_sym)
       end
 
-      used_symbol_values = @states.states.map do |state|
-        state.accessing_symbol.id.s_value if state.accessing_symbol.term?
+      @states.states.each do |state|
+        state.reduces.select do |reduce|
+          used_symbols << reduce.look_ahead.flatten if !reduce.look_ahead.nil?
+        end
       end
+
+      @states.states.each do |state|
+        used_symbols << state.shifts.map(&:next_sym).filter(&:term?).flatten
+      end
+
+      used_symbols = used_symbols.flatten
 
       results = terms.select do |term|
-        !used_symbol_values.include?(term.id.s_value)
+        !used_symbols.include?(term)
       end
 
       results.each_with_index do |term, index|
         io << sprintf("%5d %s\n", index, term.id.s_value)
       end
 
-      unless results.empty?
+      if !results.empty?
         io << "\n\n"
       end
     end
