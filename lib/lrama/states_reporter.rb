@@ -30,7 +30,7 @@ module Lrama
       terms = []
       used_symbols = []
 
-      terms = @states.symbols.filter(&:term?)
+      terms = @states.symbols.select(&:term?)
  
       @states.states.select do |state|
         state.shifts.map(&:next_sym)
@@ -43,7 +43,7 @@ module Lrama
       end
 
       @states.states.each do |state|
-        used_symbols << state.shifts.map(&:next_sym).filter(&:term?).flatten
+        used_symbols << state.shifts.map(&:next_sym).select(&:term?).flatten
       end
 
       used_symbols = used_symbols.flatten
