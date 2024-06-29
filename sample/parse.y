@@ -46,7 +46,7 @@ factor          : number
 static enum yytokentype
 yylex(YYSTYPE *lval, YYLTYPE *yylloc)
 {
-    return 0;
+    return (enum yytokentype)(0);
 }
 
 static void yyerror(YYLTYPE *yylloc, const char *msg)

@@ -294,9 +294,6 @@ typedef int yy_state_fast_t;
 # define YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
 # define YY_IGNORE_MAYBE_UNINITIALIZED_END
 #endif
-#ifndef YY_INITIAL_VALUE
-# define YY_INITIAL_VALUE(Value) /* Nothing. */
-#endif
 
 #if defined __cplusplus && defined __GNUC__ && ! defined __ICC && 6 <= __GNUC__
 # define YY_IGNORE_USELESS_CAST_BEGIN                          \
@@ -304,12 +301,16 @@ typedef int yy_state_fast_t;
     _Pragma ("GCC diagnostic ignored \"-Wuseless-cast\"")
 # define YY_IGNORE_USELESS_CAST_END            \
     _Pragma ("GCC diagnostic pop")
+# define YY_INITIAL_VALUE(Value) Value
 #endif
 #ifndef YY_IGNORE_USELESS_CAST_BEGIN
 # define YY_IGNORE_USELESS_CAST_BEGIN
 # define YY_IGNORE_USELESS_CAST_END
 #endif
 
+#ifndef YY_INITIAL_VALUE
+# define YY_INITIAL_VALUE(Value) /* Nothing. */
+#endif
 
 #define YY_ASSERT(E) ((void) (0 && (E)))
 
@@ -1167,7 +1168,7 @@ yydestruct (const char *yymsg,
 
 enum yy_repair_type {
   insert,
-  delete,
+  _delete,
   shift,
 };
 
@@ -1289,7 +1290,7 @@ yy_free_repairs(yy_repairs *reps<%= output.user_formals %>)
     }
 }
 
-static int
+[[maybe_unused]] static int
 yy_process_repairs(yy_repairs *reps, yysymbol_kind_t token)
 {
   int yyn;
@@ -1401,27 +1402,27 @@ yyrecover(yy_state_t *yyss, yy_state_t *yyssp, int yychar<%= output.user_formals
                   if (current->repair_length + 1 > YYMAXREPAIR(<%= output.parse_param_name %>))
                     continue;
 
-                  yy_repairs *new = (yy_repairs *) YYMALLOC (sizeof (yy_repairs));
-                  new->id = count;
-                  new->next = 0;
-                  new->stack_length = stack_length;
-                  new->states = (yy_state_t *) YYMALLOC (sizeof (yy_state_t) * (stack_length));
-                  new->state = new->states + (current->state - current->states);
-                  YYCOPY (new->states, current->states, current->state - current->states + 1);
-                  new->repair_length = current->repair_length + 1;
-                  new->prev_repair = current;
-                  new->repair.type = insert;
-                  new->repair.term = (yysymbol_kind_t) yyx;
+                  yy_repairs *new_symbol = (yy_repairs *) YYMALLOC (sizeof (yy_repairs));
+                  new_symbol->id = count;
+                  new_symbol->next = 0;
+                  new_symbol->stack_length = stack_length;
+                  new_symbol->states = (yy_state_t *) YYMALLOC (sizeof (yy_state_t) * (stack_length));
+                  new_symbol->state = new_symbol->states + (current->state - current->states);
+                  YYCOPY (new_symbol->states, current->states, current->state - current->states + 1);
+                  new_symbol->repair_length = current->repair_length + 1;
+                  new_symbol->prev_repair = current;
+                  new_symbol->repair.type = insert;
+                  new_symbol->repair.term = (yysymbol_kind_t) yyx;
 
                   /* Process PDA assuming next token is yyx */
-                  if (! yy_process_repairs (new, yyx))
+                  if (! yy_process_repairs (new_symbol, (yysymbol_kind_t)yyx))
                     {
-                      YYFREE (new);
+                      YYFREE (new_symbol);
                       continue;
                     }
 
-                  tail->next = new;
-                  tail = new;
+                  tail->next = new_symbol;
+                  tail = new_symbol;
                   count++;
 
                   if (yyx == yytoken)
@@ -1437,7 +1438,7 @@ yyrecover(yy_state_t *yyss, yy_state_t *yyssp, int yychar<%= output.user_formals
                   YYDPRINTF ((stderr,
                         "New repairs is enqueued. count: %d, yystate: %d, yyx: %d\n",
                         count, yystate, yyx));
-                  yy_print_repairs (new<%= output.user_args %>);
+                  yy_print_repairs (new_symbol<%= output.user_args %>);
                 }
             }
         }
@@ -1476,16 +1477,18 @@ int yychar;
 /* Default value used for initialization, for pacifying older GCCs
    or non-GCC compilers.  */
 #ifdef __cplusplus
-static const YYSTYPE yyval_default = YY_INITIAL_VALUE(YYSTYPE());
+[[maybe_unused]] static const YYSTYPE yyval_default = YY_INITIAL_VALUE(YYSTYPE());
 #else
-YY_INITIAL_VALUE (static const YYSTYPE yyval_default;)
+YY_INITIAL_VALUE (static const YYSTYPE yyval_default);
 #endif
-YYSTYPE yylval YY_INITIAL_VALUE (= yyval_default);
+[[maybe_unused]] YYSTYPE yylval YY_INITIAL_VALUE (= yyval_default);
 
 /* Location data for the lookahead symbol.  */
 static const YYLTYPE yyloc_default
 # if defined YYLTYPE_IS_TRIVIAL && YYLTYPE_IS_TRIVIAL
   = { 1, 1, 1, 1 }
+#else
+  = { 0, 0, 0, 0 }
 # endif
 ;
 YYLTYPE yylloc = yyloc_default;
